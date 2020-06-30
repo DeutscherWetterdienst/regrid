@@ -12,7 +12,7 @@
 docker push ${IMAGE_NAME_LATEST}
 docker push ${IMAGE_NAME}
 
-for TARGET in "icon-eu-eps" "icon-eps" "icon" "all"; do
+for TARGET in "icon-d2" "icon-d2-eps" "icon-eu-eps" "icon-eps" "icon" "all"; do
 	for VARIANT in "" "-samples" "-grids" ; do
 	    docker push ${DOCKER_REPO}:${TARGET}${VARIANT} \
 

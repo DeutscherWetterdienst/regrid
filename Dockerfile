@@ -193,6 +193,161 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
         org.label-schema.schema-version="1.0"
 
 ################################
+# Model: ICON-D2
+################################
+# Intermediate image with additional tools
+FROM minimal as icon-d2-intermediate
+
+# Install run-time dependencies
+RUN set -ex \
+    && apt-get update \
+    && apt-get install --yes --no-install-suggests --no-install-recommends \
+      bzip2 \
+      ca-certificates \
+      curl \
+      wget \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG MODEL_NAME=icon-d2
+
+# copy samples and descriptions
+COPY /data/samples/${MODEL_NAME} /data/samples/${MODEL_NAME}
+COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
+
+# # download grid definition and generate weights
+# ARG GRID_FILENAME=/icon_grid_0044_R19B07_L.nc.bz2
+# RUN set -ex \
+#     && mkdir -p /data/grids/${MODEL_NAME} \
+#     && cd /data/grids/${MODEL_NAME} \
+#     && wget -O ${MODEL_NAME}_grid.nc.bz2 https://opendata.dwd.de/weather/lib/cdo/${GRID_FILENAME} \
+#     && bunzip2 ${MODEL_NAME}_grid.nc.bz2 \
+#     && mkdir -p /data/weights/${MODEL_NAME} \
+#     && cd /data/weights/${MODEL_NAME} \
+#     && echo Generating weights for ${MODEL_NAME} ... \
+#     && cdo \
+#          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
+#          /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
+#          /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+
+# download grid definition and generate weights
+COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
+RUN set -ex \
+    && mkdir -p /data/weights/${MODEL_NAME} \
+    && cd /data/weights/${MODEL_NAME} \
+    && echo $(ls -la /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc) \
+    && echo Generating weights for ${MODEL_NAME} ... \
+    && cdo \
+         gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
+         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
+         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+
+
+## Minimal image for regridding with predefined output
+FROM minimal as icon-d2
+COPY --from=icon-d2-intermediate /data/descriptions /data/descriptions
+COPY --from=icon-d2-intermediate /data/weights /data/weights
+ENV MODEL=icon-d2
+ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
+ENV WEIGHTS_FILE=/data/weights/${MODEL}/${MODEL}_weights.nc
+
+## Image with weights and sample data
+FROM minimal as icon-d2-samples
+COPY --from=icon-d2 /data /data
+COPY --from=icon-d2-intermediate /data/samples /data/samples
+ENV MODEL=icon-d2
+ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
+ENV WEIGHTS_FILE=/data/weights/${MODEL}/${MODEL}_weights.nc
+ENV INPUT_FILE=/data/samples/${MODEL}/${MODEL}_sample.grib2
+ENV OUTPUT_FILE=/data/samples/${MODEL}/${MODEL}_output.grib2
+
+## Image with grids, weights and samples
+FROM minimal as icon-d2-grids
+COPY --from=icon-d2-intermediate /data /data
+ENV MODEL=icon-d2
+ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
+ENV WEIGHTS_FILE=/data/weights/${MODEL}/${MODEL}_weights.nc
+ENV INPUT_FILE=/data/samples/${MODEL}/${MODEL}_sample.grib2
+ENV OUTPUT_FILE=/data/samples/${MODEL}/${MODEL}_output.grib2
+ENV GRID_FILE=/data/grids/${MODEL}/${MODEL}_grid.nc
+
+################################
+# Model: ICON-D2-EPS
+################################
+# Intermediate image with additional tools
+FROM minimal as icon-d2-eps-intermediate
+
+# Install run-time dependencies
+RUN set -ex \
+    && apt-get update \
+    && apt-get install --yes --no-install-suggests --no-install-recommends \
+      bzip2 \
+      ca-certificates \
+      curl \
+      wget \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG MODEL_NAME=icon-d2-eps
+
+# copy samples and descriptions
+COPY /data/samples/${MODEL_NAME} /data/samples/${MODEL_NAME}
+COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
+
+# # download grid definition and generate weights
+# ARG GRID_FILENAME=/icon_grid_0044_R19B07_L.nc.bz2
+# RUN set -ex \
+#     && mkdir -p /data/grids/${MODEL_NAME} \
+#     && cd /data/grids/${MODEL_NAME} \
+#     && wget -O ${MODEL_NAME}_grid.nc.bz2 https://opendata.dwd.de/weather/lib/cdo/${GRID_FILENAME} \
+#     && bunzip2 ${MODEL_NAME}_grid.nc.bz2 \
+#     && mkdir -p /data/weights/${MODEL_NAME} \
+#     && cd /data/weights/${MODEL_NAME} \
+#     && echo Generating weights for ${MODEL_NAME} ... \
+#     && cdo \
+#          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
+#          /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
+#          /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+
+# download grid definition and generate weights
+COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
+RUN set -ex \
+    && mkdir -p /data/weights/${MODEL_NAME} \
+    && cd /data/weights/${MODEL_NAME} \
+    && echo Generating weights for ${MODEL_NAME} ... \
+    && cdo \
+         gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
+         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
+         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+
+
+## Minimal image for regridding with predefined output
+FROM minimal as icon-d2-eps
+COPY --from=icon-d2-eps-intermediate /data/descriptions /data/descriptions
+COPY --from=icon-d2-eps-intermediate /data/weights /data/weights
+ENV MODEL=icon-d2-eps
+ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
+ENV WEIGHTS_FILE=/data/weights/${MODEL}/${MODEL}_weights.nc
+
+## Image with weights and sample data
+FROM minimal as icon-d2-eps-samples
+COPY --from=icon-d2-eps /data /data
+COPY --from=icon-d2-eps-intermediate /data/samples /data/samples
+ENV MODEL=icon-d2-eps
+ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
+ENV WEIGHTS_FILE=/data/weights/${MODEL}/${MODEL}_weights.nc
+ENV INPUT_FILE=/data/samples/${MODEL}/${MODEL}_sample.grib2
+ENV OUTPUT_FILE=/data/samples/${MODEL}/${MODEL}_output.grib2
+
+## Image with grids, weights and samples
+FROM minimal as icon-d2-eps-grids
+COPY --from=icon-d2-eps-intermediate /data /data
+ENV MODEL=icon-d2-eps
+ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
+ENV WEIGHTS_FILE=/data/weights/${MODEL}/${MODEL}_weights.nc
+ENV INPUT_FILE=/data/samples/${MODEL}/${MODEL}_sample.grib2
+ENV OUTPUT_FILE=/data/samples/${MODEL}/${MODEL}_output.grib2
+ENV GRID_FILE=/data/grids/${MODEL}/${MODEL}_grid.nc
+
+################################
 # Model: ICON-EU-EPS
 ################################
 # Intermediate image with additional tools
@@ -394,6 +549,8 @@ ENV GRID_FILE=/data/grids/${MODEL}/${MODEL}_grid.nc
 # Model: ALL MODELS
 ################################
 FROM minimal as all-intermediate
+COPY --from=icon-d2-grids /data /data
+COPY --from=icon-d2-eps-grids /data /data
 COPY --from=icon-eu-eps-grids /data /data
 COPY --from=icon-eps-grids /data /data
 COPY --from=icon-grids /data /data

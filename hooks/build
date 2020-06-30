@@ -36,7 +36,7 @@ docker build \
 		.
 
 # Build custom images for each model
-for TARGET in "icon-eu-eps" "icon-eps" "icon" "all"; do
+for TARGET in "icon-d2" "icon-d2-eps" "icon-eu-eps" "icon-eps" "icon" "all"; do
 	for VARIANT in "" "-samples" "-grids" ; do
 		docker build \
 				--build-arg ECCODES_VERSION=${ECCODES_VERSION} \

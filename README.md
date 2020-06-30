@@ -51,6 +51,8 @@ Docker images that are tagged with a model name such as ``icon-eu-eps`` or ``all
  * ICON Global: ``deutscherwetterdienst/regrid:icon``
  * ICON Global Ensemble: ``deutscherwetterdienst/regrid:icon-eps``
  * ICON EU Nest Ensemble: ``deutscherwetterdienst/regrid:icon-eu-eps``
+ * ICON-D2 (pre-operational): ``deutscherwetterdienst/regrid:icon-eu-eps``
+ * ICON-D2 Ensemble (pre-operational): ``deutscherwetterdienst/regrid:icon-eu-eps``
 
 ## Docker Tags
 The general nomenclature for tags is as follows: 
