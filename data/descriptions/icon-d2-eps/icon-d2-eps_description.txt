@@ -1,0 +1,13 @@
+# Climate Data Operator (CDO) grid description file
+# Input: ICON-D2/ICON-D2-EPS
+# Area: Germany
+# Grid: regular latitude longitude/geographical grid
+# Resolution: 0.02 x 0.02 degrees (approx. 2km)
+
+gridtype = lonlat
+xsize    = 1203
+ysize    = 722
+xfirst   = -3.84
+xinc     = 0.02
+yfirst   = 43.18
+yinc     = 0.02

@@ -1,0 +1,24 @@
+#!/bin/bash
+# This file adds the default "push" phase of
+# docker autobuild.
+#
+# Advanced options for Autobuild and Autotest
+# see https://docs.docker.com/docker-hub/builds/advanced/
+#
+# load environment variables from env file
+. "$(dirname $0)/env"
+
+# push basic minimal image with latest tag and version tag
+docker push ${IMAGE_NAME_LATEST}
+docker push ${IMAGE_NAME}
+
+for TARGET in "icon-eu-eps" "icon-eps" "icon" "all"; do
+	for VARIANT in "" "-samples" "-grids" ; do
+	    docker push ${DOCKER_REPO}:${TARGET}${VARIANT} \
+
+        # push with version suffix if necessary
+        if [[ "$DOCKER_TAG" != "latest" ]]; then
+            docker push ${DOCKER_REPO}:${TARGET}${VARIANT}-${DOCKER_TAG}
+        fi
+    done;
+done;
