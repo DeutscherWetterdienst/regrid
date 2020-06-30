@@ -22,6 +22,7 @@
 
 
 # Build the basic minimal image
+# tag it as "latest" so docker can push it
 docker build \
 		--build-arg ECCODES_VERSION=${ECCODES_VERSION} \
 		--build-arg PYTHON_VERSION=${PYTHON_VERSION} \
@@ -33,6 +34,7 @@ docker build \
 		--file ${DOCKERFILE_PATH} \
 		--target "minimal" \
 		--tag ${IMAGE_NAME} \
+		--tag ${IMAGE_NAME_LATEST} \
 		.
 
 # Build custom images for each model
