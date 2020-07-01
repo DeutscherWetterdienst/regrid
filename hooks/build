@@ -33,9 +33,13 @@ docker build \
 		--build-arg VERSION=${DOCKER_TAG} \
 		--file ${DOCKERFILE_PATH} \
 		--target "minimal" \
-		--tag ${IMAGE_NAME} \
 		--tag ${IMAGE_NAME_LATEST} \
 		.
+
+# tag with version suffix if necessary
+if [[ "$DOCKER_TAG" != "latest" ]]; then
+	docker tag ${IMAGE_NAME_LATEST} ${IMAGE_NAME}
+fi
 
 # Build custom images for each model
 for TARGET in "icon-eu-eps" "icon-eps" "icon" "all"; do
