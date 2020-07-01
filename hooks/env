@@ -5,7 +5,7 @@
 
 [ -n "$SOURCE_URL" ]        || SOURCE_URL=https://github.com/deutscherwetterdienst/regrid
 [ -n "$DOCKER_REPO" ]       || DOCKER_REPO=deutscherwetterdienst/regrid
-[ -n "$ECCODES_VERSION" ]   || ECCODES_VERSION="2.17.1"
+[ -n "$ECCODES_VERSION" ]   || ECCODES_VERSION="2.18.0"
 [ -n "$PYTHON_VERSION" ]    || PYTHON_VERSION="3.7.7"
 [ -n "$CDO_VERSION" ]       || CDO_VERSION="1.9.8"
 
