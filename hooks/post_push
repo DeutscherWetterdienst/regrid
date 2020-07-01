@@ -13,7 +13,7 @@ docker push ${IMAGE_NAME_LATEST}
 
 # tag with version suffix if necessary
 if [[ "$DOCKER_TAG" != "latest" ]]; then
-	docker tag ${IMAGE_NAME}
+	docker push ${IMAGE_NAME}
 fi
 
 for TARGET in "icon-eu-eps" "icon-eps" "icon" "all"; do
