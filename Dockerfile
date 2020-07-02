@@ -231,6 +231,8 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
 COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
+# workaround for incomplete grid file (needs a copy called 'private')
+COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/private
 RUN set -ex \
     && mkdir -p /data/weights/${MODEL_NAME} \
     && cd /data/weights/${MODEL_NAME} \
@@ -309,6 +311,8 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
 COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
+# workaround for incomplete grid file (needs a copy called 'private')
+COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/private
 RUN set -ex \
     && mkdir -p /data/weights/${MODEL_NAME} \
     && cd /data/weights/${MODEL_NAME} \
