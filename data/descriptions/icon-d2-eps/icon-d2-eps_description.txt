@@ -5,9 +5,9 @@
 # Resolution: 0.02 x 0.02 degrees (approx. 2km)
 
 gridtype = lonlat
-xsize    = 1203
-ysize    = 722
-xfirst   = -3.84
+xsize    = 1214
+ysize    = 745
+xfirst   = -3.94
 xinc     = 0.02
 yfirst   = 43.18
 yinc     = 0.02
