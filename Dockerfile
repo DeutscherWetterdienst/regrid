@@ -233,14 +233,14 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
 # workaround for incomplete grid file: needs a copy/symbolic link named 'private'
 RUN set -ex \
-    && ln -s /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/private \
     && mkdir -p /data/weights/${MODEL_NAME} \
     && cd /data/weights/${MODEL_NAME} \
     && echo $(ls -la /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc) \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:2 \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
          /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
@@ -313,13 +313,13 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
 # workaround for incomplete grid file: needs a copy/symbolic link named 'private'
 RUN set -ex \
-    && ln -s /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/private \
     && mkdir -p /data/weights/${MODEL_NAME} \
     && cd /data/weights/${MODEL_NAME} \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:2 \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
          /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
