@@ -164,6 +164,8 @@ COPY --from=build /src/eccodes-python/ /src/eccodes-python/
 RUN set -ex \
     && /sbin/ldconfig
 
+COPY /data/scripts/convert.sh /convert.sh
+
 # Default command
 ENV MODEL=undefined-model-env
 ENV DESCRIPTION_FILE=/data/descriptions/${MODEL}/${MODEL}_description.txt
@@ -214,34 +216,22 @@ ARG MODEL_NAME=icon-d2
 COPY /data/samples/${MODEL_NAME} /data/samples/${MODEL_NAME}
 COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
-# # download grid definition and generate weights
-# ARG GRID_FILENAME=/icon_grid_0044_R19B07_L.nc.bz2
-# RUN set -ex \
-#     && mkdir -p /data/grids/${MODEL_NAME} \
-#     && cd /data/grids/${MODEL_NAME} \
-#     && wget -O ${MODEL_NAME}_grid.nc.bz2 https://opendata.dwd.de/weather/lib/cdo/${GRID_FILENAME} \
-#     && bunzip2 ${MODEL_NAME}_grid.nc.bz2 \
-#     && mkdir -p /data/weights/${MODEL_NAME} \
-#     && cd /data/weights/${MODEL_NAME} \
-#     && echo Generating weights for ${MODEL_NAME} ... \
-#     && cdo \
-#          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-#          /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
-#          /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
-
 # download grid definition and generate weights
-COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
-# workaround for incomplete grid file: needs a copy/symbolic link named 'private'
+ARG GRID_FILENAME=icon_grid_0047_R19B07_L.nc.bz2
+ARG NC_GRID_NUMBER=2
 RUN set -ex \
+    && mkdir -p /data/grids/${MODEL_NAME} \
+    && cd /data/grids/${MODEL_NAME} \
+    && wget -O ${MODEL_NAME}_grid.nc.bz2 https://opendata.dwd.de/weather/lib/cdo/${GRID_FILENAME} \
+    && bunzip2 ${MODEL_NAME}_grid.nc.bz2 \
     && mkdir -p /data/weights/${MODEL_NAME} \
     && cd /data/weights/${MODEL_NAME} \
-    && echo $(ls -la /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc) \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:2 \
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
             /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
-         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
 ## Minimal image for regridding with predefined output
@@ -294,33 +284,22 @@ ARG MODEL_NAME=icon-d2-eps
 COPY /data/samples/${MODEL_NAME} /data/samples/${MODEL_NAME}
 COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
-# # download grid definition and generate weights
-# ARG GRID_FILENAME=/icon_grid_0044_R19B07_L.nc.bz2
-# RUN set -ex \
-#     && mkdir -p /data/grids/${MODEL_NAME} \
-#     && cd /data/grids/${MODEL_NAME} \
-#     && wget -O ${MODEL_NAME}_grid.nc.bz2 https://opendata.dwd.de/weather/lib/cdo/${GRID_FILENAME} \
-#     && bunzip2 ${MODEL_NAME}_grid.nc.bz2 \
-#     && mkdir -p /data/weights/${MODEL_NAME} \
-#     && cd /data/weights/${MODEL_NAME} \
-#     && echo Generating weights for ${MODEL_NAME} ... \
-#     && cdo \
-#          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-#          /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
-#          /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
-
 # download grid definition and generate weights
-COPY /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc
-# workaround for incomplete grid file: needs a copy/symbolic link named 'private'
+ARG GRID_FILENAME=icon_grid_0047_R19B07_L.nc.bz2
+ARG NC_GRID_NUMBER=2
 RUN set -ex \
+    && mkdir -p /data/grids/${MODEL_NAME} \
+    && cd /data/grids/${MODEL_NAME} \
+    && wget -O ${MODEL_NAME}_grid.nc.bz2 https://opendata.dwd.de/weather/lib/cdo/${GRID_FILENAME} \
+    && bunzip2 ${MODEL_NAME}_grid.nc.bz2 \
     && mkdir -p /data/weights/${MODEL_NAME} \
     && cd /data/weights/${MODEL_NAME} \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:2 \
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
             /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
-         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
 ## Minimal image for regridding with predefined output
@@ -375,6 +354,7 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
 ARG GRID_FILENAME=icon_grid_0028_R02B07_N02.nc.bz2
+ARG NC_GRID_NUMBER=1
 RUN set -ex \
     && mkdir -p /data/grids/${MODEL_NAME} \
     && cd /data/grids/${MODEL_NAME} \
@@ -385,8 +365,9 @@ RUN set -ex \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
-         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
 ## Minimal image for regridding with predefined output
@@ -441,6 +422,7 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
 ARG GRID_FILENAME=icon_grid_0024_R02B06_G.nc.bz2
+ARG NC_GRID_NUMBER=1
 RUN set -ex \
     && mkdir -p /data/grids/${MODEL_NAME} \
     && cd /data/grids/${MODEL_NAME} \
@@ -451,8 +433,9 @@ RUN set -ex \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
-         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
 ## Minimal image for regridding with predefined output
@@ -507,6 +490,7 @@ COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
 ARG GRID_FILENAME=icon_grid_0026_R03B07_G.nc.bz2
+ARG NC_GRID_NUMBER=1
 RUN set -ex \
     && mkdir -p /data/grids/${MODEL_NAME} \
     && cd /data/grids/${MODEL_NAME} \
@@ -517,8 +501,9 @@ RUN set -ex \
     && echo Generating weights for ${MODEL_NAME} ... \
     && cdo \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
-         /data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc \
-         /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
 
 
 ## Minimal image for regridding with predefined output
