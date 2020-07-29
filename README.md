@@ -148,7 +148,35 @@ cdo    remap: Processed 40 variables over 1 timestep [0.32s 79MB].
 **Attention**: The model of the docker image and the grid of the selected file have match!
 
 ### Example 2: Interpolate all files from a local folder
-To simplify the batch interpolation of files, the script ``convert.sh`` is included in every image.
+To simplify the batch interpolation of files, the script ``convert.sh`` is included in every image. You can use environment variables or command line options to control the script's behaviour:
+```
+Regrids grib2 files and writes the output to the output directory. 
+
+Usage: convert.sh [-i <INPUT_FILE>] [-o <OUTPUT_FILE>] [-w <WEIGHTS_FILE>] [-d <DESCRIPTION_FILE>] 
+
+ 
+Alternatively the following environment variables can be used to control this script: 
+	 - INPUT_FILE : grib2 file or directory containing grib file(s) 
+	 - OUTPUT_FILE : grib2 file or directory to output regridded file(s) 
+	 - WEIGHTS_FILE : netCDF file that contains interpolation weights 
+	 - DESCRIPTION_FILE : cdo target grid description file for the given weights file 
+
+ 
+Example (with command line options): 
+	 convert.sh \ 
+		 -i /data/samples/icon/ \ 
+		 -o /output/ \ 
+		 -w /data/weights/icon/icon_weights.nc \ 
+		 -d /data/descriptions/icon/icon_description.txt 
+ 
+Example (with environment variables): 
+	 export INPUT_FILE=/data/samples/icon/ 
+	 export OUTPUT_FILE=/output/ 
+	 export WEIGHTS_FILE=/data/weights/icon/icon_weights.nc 
+	 export DESCRIPTION_FILE=/data/descriptions/icon/icon_description.txt 
+	 convert.sh 
+```
+
 
 1. Place all GRIB2 files that need to converted into a single folder, e.g ``~/mydata``. It's important that all these files are from the same model, e.g. the model ``icon``. Now the contents of you folder should look something like this:
 ```
@@ -165,7 +193,7 @@ drwxr-xr-x@ 125 eduard  staff     4000 Jun 23 21:58 ..
 mkdir ~/output
 ```
 
-3. Mount the folders inside your container and run the ``convert.sh`` script located in file system root:
+3. Mount the folders inside your container (make sure you use absolute paths) and run the ``convert.sh`` script located in file system root:
 ```
 docker run --rm \
     --volume ~/mydata:/mydata \
