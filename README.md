@@ -178,14 +178,16 @@ Example (with environment variables):
 ```
 
 
-1. Place all GRIB2 files that need to converted into a single folder, e.g ``~/mydata``. It's important that all these files are from the same model, e.g. the model ``icon``. Now the contents of you folder should look something like this:
+1. Place all GRIB2 files that need to converted into a single folder, e.g ``~/mydata``. It's important that all these files are from the same model, e.g. the model ``icon-d2-eps``. Now the contents of you folder should look something like this:
 ```
-eduard@Eduards-Macbook-Air mydata % ls -la
-total 23064
-drwxr-xr-x    5 eduard  staff      160 Jun 23 22:03 .
-drwxr-xr-x@ 125 eduard  staff     4000 Jun 23 21:58 ..
--rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020060900_000_T_2M.grib2
--rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020061800_000_T_2M.grib2
+eduard@Eduards-MacBook-Air mydata % ls -la
+total 262080
+drwxr-xr-x    8 eduard  staff       256 Jul 29 19:44 .
+drwxr-xr-x@ 127 eduard  staff      4064 Jul 29 19:38 ..
+-rw-r--r--    1 eduard  staff  22361460 Jul 29 19:44 icon-d2-eps_germany_icosahedral_single-level_2020072900_000_2d_t_2m.grib2
+-rw-r--r--    1 eduard  staff  22361460 Jul 29 19:44 icon-d2-eps_germany_icosahedral_single-level_2020072900_001_2d_t_2m.grib2
+-rw-r--r--    1 eduard  staff  22361460 Jul 29 19:44 icon-d2-eps_germany_icosahedral_single-level_2020072900_002_2d_t_2m.grib2
+...
 ...
 ```
 2. Create a folder that will hold regridded data, e.g. ``~/output``.
@@ -193,32 +195,39 @@ drwxr-xr-x@ 125 eduard  staff     4000 Jun 23 21:58 ..
 mkdir ~/output
 ```
 
-3. Mount the folders inside your container (make sure you use absolute paths) and run the ``convert.sh`` script located in file system root:
+3. Mount the folders inside your container (make sure you use absolute paths) and run the ``convert.sh`` script located in file system root. Make sure you selected an image that matches the data you want to regrid, e.g. ``deutscherwetterdienst/regrid:icon-d2-eps`` for ``icon-d2-eps`` data:
 ```
 docker run --rm \
     --volume ~/mydata:/mydata \
     --volume ~/output:/output \
     --env INPUT_FILE=/mydata \
     --env OUTPUT_FILE=/output \
-    deutscherwetterdienst/regrid:icon \
+    deutscherwetterdienst/regrid:icon-d2-eps \
     /convert.sh
 ```
 The output should look something like this:
 ```
-cdo    remap: Processed 1 variable over 1 timestep [0.76s 427MB].
-cdo    remap: Processed 1 variable over 1 timestep [0.74s 427MB].
+Regridding all files in directory '/mydata' ...
+Regridding '/mydata/icon-d2-eps_germany_icosahedral_single-level_2020072900_000_2d_t_2m.grib2' > '/output/regridded_icon-d2-eps_germany_icosahedral_single-level_2020072900_000_2d_t_2m.grib2'...
+cdo    remap: Processed 20 variables over 1 timestep [1.01s 170MB].
+Regridding '/mydata/icon-d2-eps_germany_icosahedral_single-level_2020072900_001_2d_t_2m.grib2' > '/output/regridded_icon-d2-eps_germany_icosahedral_single-level_2020072900_001_2d_t_2m.grib2'...
+cdo    remap: Processed 20 variables over 1 timestep [0.93s 170MB].
+Regridding '/mydata/icon-d2-eps_germany_icosahedral_single-level_2020072900_002_2d_t_2m.grib2' > '/output/regridded_icon-d2-eps_germany_icosahedral_single-level_2020072900_002_2d_t_2m.grib2'...
+cdo    remap: Processed 20 variables over 1 timestep [1.04s 170MB].
+
 ...
+
+Done.
 ```
-Your folder should now contain the regridded files:
+Your folder ``~/output`` should now contain the regridded files:
 ```
-eduard@Eduards-Macbook-Air mydata % ls -la
-total 56344
-drwxr-xr-x    7 eduard  staff      224 Jun 23 22:10 .
-drwxr-xr-x@ 125 eduard  staff     4000 Jun 23 21:58 ..
--rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020060900_000_T_2M.grib2
--rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020061800_000_T_2M.grib2
--rw-r--r--    1 eduard  staff  8297484 Jun 23 22:11 regridded_icon_global_icosahedral_single-level_2020060900_000_T_2M.grib2
--rw-r--r--    1 eduard  staff  8297484 Jun 23 22:11 regridded_icon_global_icosahedral_single-level_2020061800_000_T_2M.grib2
+eduard@Eduards-MacBook-Air output % ls -la
+total 621800
+drwxr-xr-x   20 eduard  staff       640 Jul 29 19:45 .
+drwxr-xr-x@ 127 eduard  staff      4064 Jul 29 19:38 ..
+-rw-r--r--    1 eduard  staff  32220340 Jul 29 19:44 regridded_icon-d2-eps_germany_icosahedral_single-level_2020072900_000_2d_t_2m.grib2
+-rw-r--r--    1 eduard  staff  32220340 Jul 29 19:44 regridded_icon-d2-eps_germany_icosahedral_single-level_2020072900_001_2d_t_2m.grib2
+-rw-r--r--    1 eduard  staff  32220340 Jul 29 19:44 regridded_icon-d2-eps_germany_icosahedral_single-level_2020072900_002_2d_t_2m.grib2
 ...
 ```
 
