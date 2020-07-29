@@ -148,33 +148,32 @@ cdo    remap: Processed 40 variables over 1 timestep [0.32s 79MB].
 **Attention**: The model of the docker image and the grid of the selected file have match!
 
 ### Example 2: Interpolate all files from a local folder
-1) Place all GRIB2 files that need to converted in a single folder, e.g ``~/mydata``. 
-2) Place the a simple shell script ``convert.sh`` in the same folder as the GRIB2 data, with the following contents:
-```
-#!/bin/bash
-# file name: convert.sh
-for i in $(ls | grep -v .sh); do 
-    cdo -f grb2 remap,${DESCRIPTION_FILE},${WEIGHTS_FILE} ${i} regridded_${i};
-done
-```
-Now the contents of you folder should look something like this:
+To simplify the batch interpolation of files, the script ``convert.sh`` is included in every image.
+
+1. Place all GRIB2 files that need to converted into a single folder, e.g ``~/mydata``. It's important that all these files are from the same model, e.g. the model ``icon``. Now the contents of you folder should look something like this:
 ```
 eduard@Eduards-Macbook-Air mydata % ls -la
 total 23064
 drwxr-xr-x    5 eduard  staff      160 Jun 23 22:03 .
 drwxr-xr-x@ 125 eduard  staff     4000 Jun 23 21:58 ..
--rw-r--r--    1 eduard  staff      154 Jun 23 21:56 convert.sh
 -rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020060900_000_T_2M.grib2
 -rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020061800_000_T_2M.grib2
 ...
 ```
-3. Mount the folder inside your container and run the ``convert.sh`` script:
+2. Create a folder that will hold regridded data, e.g. ``~/output``.
+```
+mkdir ~/output
+```
+
+3. Mount the folders inside your container and run the ``convert.sh`` script located in file system root:
 ```
 docker run --rm \
     --volume ~/mydata:/mydata \
-    --workdir /mydata \
+    --volume ~/output:/output \
+    --env INPUT_FILE=/mydata \
+    --env OUTPUT_FILE=/output \
     deutscherwetterdienst/regrid:icon \
-    sh convert.sh
+    /convert.sh
 ```
 The output should look something like this:
 ```
@@ -188,7 +187,6 @@ eduard@Eduards-Macbook-Air mydata % ls -la
 total 56344
 drwxr-xr-x    7 eduard  staff      224 Jun 23 22:10 .
 drwxr-xr-x@ 125 eduard  staff     4000 Jun 23 21:58 ..
--rw-r--r--    1 eduard  staff      154 Jun 23 21:56 convert.sh
 -rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020060900_000_T_2M.grib2
 -rw-r--r--@   1 eduard  staff  5898409 Jun 23 21:56 icon_global_icosahedral_single-level_2020061800_000_T_2M.grib2
 -rw-r--r--    1 eduard  staff  8297484 Jun 23 22:11 regridded_icon_global_icosahedral_single-level_2020060900_000_T_2M.grib2
