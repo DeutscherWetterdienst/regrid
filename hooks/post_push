@@ -16,7 +16,7 @@ if [[ "$DOCKER_TAG" != "latest" ]]; then
 	docker push ${IMAGE_NAME}
 fi
 
-for TARGET in "icon-eu-eps" "icon-eps" "icon" "all"; do
+for TARGET in "icon-d2" "icon-d2-eps" "icon-eu-eps" "icon-eps" "icon" "all"; do
 	for VARIANT in "" "-samples" "-grids" ; do
 	    docker push ${DOCKER_REPO}:${TARGET}${VARIANT} \
 
