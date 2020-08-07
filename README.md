@@ -1,6 +1,6 @@
 [![CDO version](https://img.shields.io/badge/CDO-1.9.8-informational)](https://code.mpimet.mpg.de/projects/cdo/files)
-[![Python version](https://img.shields.io/badge/python-3.7.7-informational)](https://hub.docker.com/_/python)
-[![ecCodes version](https://img.shields.io/badge/ecCodes-2.17.1-informational)](https://github.com/ecmwf/eccodes)
+[![Python version](https://img.shields.io/badge/python-3.7.8-informational)](https://hub.docker.com/_/python)
+[![ecCodes version](https://img.shields.io/badge/ecCodes-2.18.0-informational)](https://github.com/ecmwf/eccodes)
 [![zlib version](https://img.shields.io/badge/zlib-1.2.11-informational)](https://zlib.net)
 [![HDF5 version](https://img.shields.io/badge/HDF5-1.12.0-informational)](https://github.com/live-clones/hdf5)
 [![NetCDF version](https://img.shields.io/badge/NetCDF-4.7.4-informational)](http://www.unidata.ucar.edu/downloads/netcdf/index.jsp)
