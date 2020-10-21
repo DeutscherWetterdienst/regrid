@@ -327,6 +327,13 @@ cdo gennn,/mydata/custom_grid.txt \
     /data/grids/icon/icon_grid.nc \
     /mydata/custom_weights.nc
 ```
+**Attention:** For ``ICON-D2`` (and ``ICON-D2-EPS``) you need to use the ``-setgrid`` option and select grid no. 2 in the netCDF grid definition file to generate weights:
+```
+cdo gennn,/mydata/custom_grid.txt \
+  -setgrid,/data/grids/icon-d2/icon-d2_grid.nc:2 \
+  /data/samples/icon-d2/icon-d2_sample.grib2 \
+  /mydata/custom_weights.nc
+```
 The output should look something like this:
 ```
 cdo    gennn: Nearest neighbor weights from unstructured (2949120) to lonlat (601x301) grid
