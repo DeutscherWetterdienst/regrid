@@ -1,0 +1,16 @@
+# Climate Data Operator (CDO) grid description file
+# Input: ICON-D2/ICON-D2-EPS
+# Area: Germany
+# Grid: rotated latitude longitude/geographical grid
+# Resolution: 0.02 x 0.02 degrees (approx. 2km)
+
+gridtype                  = projection
+xsize                     = 651
+ysize                     = 716
+xfirst                    = -7.50
+xinc                      = 0.02
+yfirst                    = -6.30
+yinc                      = 0.02
+grid_mapping_name         = rotated_latitude_longitude
+grid_north_pole_longitude = -170
+grid_north_pole_latitude  = 40

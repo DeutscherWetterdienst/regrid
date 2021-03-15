@@ -1,5 +1,4 @@
 # Slim Docker multi-stage build
-# for Magics
 
 # Build image
 ARG PYTHON_VERSION=3.7.7
@@ -231,7 +230,12 @@ RUN set -ex \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
             -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
             /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
-            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc \
+    && cdo \
+         gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_rotated_description.txt \
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_rotated_weights.nc
 
 
 ## Minimal image for regridding with predefined output
@@ -299,7 +303,12 @@ RUN set -ex \
          gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_description.txt \
             -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
             /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
-            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_weights.nc \
+    && cdo \
+         gennn,/data/descriptions/${MODEL_NAME}/${MODEL_NAME}_rotated_description.txt \
+            -setgrid,/data/grids/${MODEL_NAME}/${MODEL_NAME}_grid.nc:${NC_GRID_NUMBER} \
+            /data/samples/${MODEL_NAME}/${MODEL_NAME}_sample.grib2 \
+            /data/weights/${MODEL_NAME}/${MODEL_NAME}_rotated_weights.nc
 
 
 ## Minimal image for regridding with predefined output
