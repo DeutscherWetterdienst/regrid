@@ -2,12 +2,12 @@
 # Input: ICON-EU-EPS
 # Area: Europe
 # Grid: regular latitude longitude/geographical grid
-# Resolution: 0.0625 x 0.0625 degrees (approx. 6.5km)
+# Resolution: 0.125 x 0.125 degrees (approx. 13km)
 
 gridtype = lonlat
-xsize    = 431
-ysize    = 206
-xfirst   = -23.6
-xinc     = 0.2
-yfirst   = 29.4
-yinc     = 0.2
+xsize    = 688
+ysize    = 328
+xfirst   = -23.5
+xinc     = 0.125
+yfirst   = 29.5
+yinc     = 0.125
