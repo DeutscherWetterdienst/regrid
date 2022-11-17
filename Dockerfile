@@ -362,7 +362,7 @@ COPY /data/samples/${MODEL_NAME} /data/samples/${MODEL_NAME}
 COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
-ARG GRID_FILENAME=icon_grid_0028_R02B07_N02.nc.bz2
+ARG GRID_FILENAME=icon_grid_0037_R03B07_N02.nc.bz2
 ARG NC_GRID_NUMBER=1
 RUN set -ex \
     && mkdir -p /data/grids/${MODEL_NAME} \
@@ -430,7 +430,7 @@ COPY /data/samples/${MODEL_NAME} /data/samples/${MODEL_NAME}
 COPY /data/descriptions/${MODEL_NAME} /data/descriptions/${MODEL_NAME}
 
 # download grid definition and generate weights
-ARG GRID_FILENAME=icon_grid_0024_R02B06_G.nc.bz2
+ARG GRID_FILENAME=icon_grid_0036_R03B06_G.nc.bz2
 ARG NC_GRID_NUMBER=1
 RUN set -ex \
     && mkdir -p /data/grids/${MODEL_NAME} \
