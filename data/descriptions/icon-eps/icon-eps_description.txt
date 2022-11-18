@@ -1,13 +1,12 @@
-# Climate Data Operator (CDO) grid description file
 # Input: ICON-EPS
 # Area: Global
 # Grid: regular latitude longitude/geographical grid
-# Resolution: 0.5 x 0.5 degrees (approx. 40km)
+# Resolution: 0.25 x 0.25 degrees (approx. 26km)
 
 gridtype = lonlat
-xsize    = 721
-ysize    = 361
+xsize    = 1441
+ysize    = 721
 xfirst   = -180
-xinc     = 0.5
+xinc     = 0.25
 yfirst   = -90
-yinc     = 0.5
+yinc     = 0.25
